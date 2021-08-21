@@ -1,0 +1,14 @@
+Comments:
+
+- fullspectrum.txt contains the spectrum from mid-2012 through early 2020, the spectrum is formatted as a 912x137 array, corresponding to 137 frequency channels and 912 time steps
+- fullspectrum_frequencies.txt lists the 137 frequency channels (in kHz) for the spectrum in fullspectrum.txt
+- fullspectrum_times.txt lists the 912 times in date-time format
+
+- newsignal.txt contains the spectrum from December 2014 through January 2020, the spectrum is formatted as a 626x69 array, corresponding to 69 frequency channels and 626 time steps, the spectrum is cut off in intensity at a value of 0.15 to bring out the very weak signal
+- newsignal_frequencies.txt lists the 69 frequency channels (in kHz) for the spectrum in newsignal.txt
+- newsignal_times.txt lists the 626 times in date-time format
+
+- cleansig_freqs.txt contains the peak frequency (in kHz) of the very weak signal as a function of time
+- cleansig_times.txt contains the time stamps corresponding to each frequency point in cleansig_freqs.txt
+- modelsig_freqs.txt contains the modeled, continuous form of the weak signal's frequency (in kHz)
+- modelsig_times.txt contains the time stamps for the model
