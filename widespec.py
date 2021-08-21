@@ -53,12 +53,9 @@ def readhighres(fname):
     
             # Extract the SCLK line count from bytes 23 and 24 (MSB 16-bit integer)
             line = int(rec[r+22]) * 256 + int(rec[r+23])
-            #print(rec[r+23], int(rec[r+23]))
-            #print(line)
 
             # The time offset relative to the time in the label, in seconds
             offset = 0.06 * (line - 1)
-            #print('offset',offset)
     
             # Extract the high-order 4-bit samples
         
@@ -140,8 +137,7 @@ def specstats(spec,freq,label):
         
     # calculate rms of spectrum in frequency bins
     
-    bins = arange(0.5,14.5,1.)#[1.,3.,5.,7.,9.,11.,13.] #center of each freq. bin
-    print(bins)
+    bins = arange(0.5,14.5,1.)
     bin_rms = []
     bin_mean = []
     
@@ -170,9 +166,7 @@ def specstats(spec,freq,label):
             
             vari = m2**2. - meanbin**2.
             rmsbin = sqrt(vari)
-            #print(b, rms)
             
-        #print(b, rms, meanspec)
         bin_rms.append(rmsbin)
         bin_mean.append(meanbin)
     
@@ -227,22 +221,13 @@ def speclines(timevg,meanspec,rms,freq):
     freq = freq[freqinds]
     freq1d = timevg[freqinds]
     
-    #linfitt = polyfit(freq,freq1d,3)
-    #p = poly1d(linfitt)
-    #noramp = freq1d - p(freq)
-    #plot(freq,freq1d)
-    #plot(freq,p(freq))
-    #yscale('log')
-    
     thresh = (freq1d - meanspec)/rms
-    #peaks,heights = find_peaks(freq1d,prominence=1)
     peaks=[]
     for i in range(len(freq1d)):
         if thresh[i]>1.5:
             peaks.append(i)
     plot(freq,freq1d)
     plot(freq[peaks],freq1d[peaks],'o')
-    #plot(freq[peaks],thresh[peaks],'o')
     xscale('log')
     yscale('log')
     xlabel('Frequency [kHz]')
@@ -280,7 +265,6 @@ def plots(spectrum,label,recordtime,fullrecord,fulltime,freq,timeavg1,freqavg1,a
     # plot the time series, power spectrum, & ACF
 
     #set indices for plotting the spectrum
-    #min,max = 0,-1
     mini,maxi = 2,int(shape(spectrum)[0]/2) #plots half the frequencies
 
     fig = figure(figsize=(15,7))
@@ -288,7 +272,6 @@ def plots(spectrum,label,recordtime,fullrecord,fulltime,freq,timeavg1,freqavg1,a
 
     ax1 = fig.add_axes([0.06,0.77,0.82,0.15])
     ax1.plot(10.**(-3.)*recordtime.flatten(),fullrecord.flatten()-7.5,linewidth=0.5)
-    #ax1.plot(10.**(-3.)*recordtime.flatten(),filtered.flatten(),linewidth=0.5)
     ax1.set_xlim(0,recordtime[-1,-1]*10**(-3))
     ax1.set_xlabel('Time [s]',fontsize=8)
     ax1.set_ylabel('Raw Amplitude',fontsize=8)
@@ -384,45 +367,24 @@ def plots(spectrum,label,recordtime,fullrecord,fulltime,freq,timeavg1,freqavg1,a
     ax7.ticklabel_format(axis='y',style='sci',scilimits=(0,0))
     x = linspace(0,len(freqslice),len(freqslice))
     ax7.plot(x,freqslice,label='0 kHz',drawstyle='steps',linewidth=1)
-    #ax7.set_yscale('log')
-    #ax7.set_yticks([10**3])
     ax7.set_xlim(min(x),max(x))
-    #ax7.plot(acf[700,:],label=str(acfF[700])+' kHz')
-    #ax7.plot(acf[300,:],label='-8.98 kHz')
     ax7.legend(fontsize=6)
     ax7.set_xticks([])
     ax7.tick_params(labelsize='small')
 
     show()
-    #savefig('/home/ella1/stella/voyager/wideband_out/quicklook/figs'+str(label),format='png')
 
 inpath = '/Users/stellaocker/Research/NASA-OH-GI/highres-calibration/C2640311.DAT'
-#inpath = '/Users/stellaocker/Research/NASA-OH-GI/binned_rms/C0982711.DAT'
-#inpath = '/Users/stellaocker/Research/NASA-OH-GI/binned_rms/C2121358.DAT'
-#inpath = '/Users/stellaocker/Research/NASA-OH-GI/binned_rms/C4642358.DAT'
 
 def main(file):
-
-    # ultimately will need to loop through all files given on command line & save arrays + figure to separate directories
 
     label,recordtime,freq,fullrecord,fulltime,spectrum = readhighres(file)
     rms,meanspec,clipspec = specstats(spectrum,freq,label)
     acf,acfT,acfF,timeslice,freqslice = ACFcalc(spectrum,meanspec,fulltime,freq)
     timeavg1,freqavg1,freqavg_cut1,freqavg_cut2,freqavg_cut3 = specavg(spectrum,freq)
-    #filtered = highpass(fullrecord)
     speclines(timeavg1,meanspec,rms,freq)
     
-    # plot ACF of time series -- probably not quite right b/c of uneven sampling
-    #fr = fullrecord.flatten() - 7.5
-    #ACFT = fftconvolve(fr,fr[::-1],mode='full')
-    #t = 10.**(-3)*recordtime.flatten()
-    #acftime = concatenate((-1*t[:-1][::-1], t))
-    #plot(acftime,ACFT)
-    #xlabel('Time Lag (s)')
-    #title('ACF of Wideband Time Series')
-    #show()
-    
-    #plots(spectrum,label,recordtime,fullrecord,fulltime,freq,timeavg1,freqavg1,acf,acfT,acfF,timeslice,freqslice,rms,meanspec,clipspec,filtered,freqavg_cut1,freqavg_cut2,freqavg_cut3)
+    plots(spectrum,label,recordtime,fullrecord,fulltime,freq,timeavg1,freqavg1,acf,acfT,acfF,timeslice,freqslice,rms,meanspec,clipspec,filtered,freqavg_cut1,freqavg_cut2,freqavg_cut3)
     
     #savez('/home/ella1/stella/voyager/wideband_out/quicklook/arrays'+str(label),spectrum,recordtime,fullrecord,fulltime,freq,acf)
 
