@@ -23,3 +23,5 @@ The data products are as follows:
   freqs = data['freqs']
 
 - The folder Sonification_Spectra contains the frequencies and time-stamps of the weak plasma line. Comments on the format of those files is provided separately in that folder.
+
+A program widespec.py is also provided to read in raw data files from the PWS wideband receiver. 
