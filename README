@@ -8,3 +8,12 @@ data = load('maskspecv4.npz') # maskspecv4 = ignoring obs w/ rms>0.15 and maskin
 freqprofs = data['spec']
 times = data['time']
 freqs = data['freq']
+
+- fullspecout2.npz contains the 2D dynamic spectrum spanning 2012 through early 2020. The spectrum can be loaded as follows:
+
+data = load('fullspecout2.npz')
+specarray = data['spec']
+times = data['time']
+freqs = data['freqs']
+
+- The folder Sonification_Spectra contains the frequencies and time-stamps of the weak plasma line. Comments on the format of those files is provided separately iin that folder.
